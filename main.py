@@ -1,6 +1,13 @@
 from pytube import YouTube
 
-url = "https://www.youtube.com/watch?v=8VfsciIdJrs"
+BASE_YOUTUBE_URL = 'https://www.youtube.com/watch?v='
+
+while True:
+    url = input("Entrez l'url de la vidéo à télécharger: ")
+    # if url[:len(BASE_YOUTUBE_URL)] == BASE_YOUTUBE_URL:
+    if url.lower().startswith(BASE_YOUTUBE_URL):
+        break
+    print("ERREUR: vous devez entrer une url de vidéo YouTube !")
 
 
 def on_download_progress(stream, chunk, bytes_remaining):
