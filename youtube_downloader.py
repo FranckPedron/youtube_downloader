@@ -37,8 +37,10 @@ def download_video(url):
 
     print("Combinaison des fichiers...")
     ffmpeg.output(ffmpeg.input(video_filename), ffmpeg.input(audio_filename), output_filename, vcodec="copy",
-                  acodec="copy").run()
+                  acodec="copy", loglevel="quiet").run(overwrite_output=True)
     print("OK")
 
+    os.remove(audio_filename)
+    os.remove(video_filename)
     os.rmdir("audio")
     os.rmdir("video")
