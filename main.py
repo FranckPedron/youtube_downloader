@@ -45,20 +45,30 @@ def on_download_progress(stream, chunk, bytes_remaining):
     print(f"Progression du téléchargement {int(percent)}%")
 
 
-url = get_video_url_from_user()
+url = "https://www.youtube.com/watch?v=yWR5Oq9_1Ck"
+# url = get_video_url_from_user()
 youtube_video = YouTube(url)
 youtube_video.register_on_progress_callback(on_download_progress)
 
 print("Titre:", youtube_video.title)
 
 print("STREAMS")
-all_streams = youtube_video.streams
+streams = youtube_video.streams.filter(progressive=False, file_extension="mp4", type="video").order_by("resolution").desc()
+video_streaam = streams[0]
 
-streams = all_streams.filter(progressive=True, file_extension="mp4")
+streams = youtube_video.streams.filter(progressive=False, file_extension="mp4", type="audio").order_by("abr").desc()
+audio_streaam = streams[0]
 
-itag_index = get_video_stream_itag_from_user(streams)
-stream = streams.get_by_itag(itag_index)
-print(stream)
-print("Téléchargement...")
-stream.download()
+print("Video stream", video_streaam)
+print("Audio stream", audio_streaam)
+
+# itag = get_video_stream_itag_from_user(streams)
+# stream = streams.get_by_itag(itag)
+# print(stream)
+print("Téléchargement vidéo...")
+video_streaam.download("video")
+print("OK")
+
+print("Téléchargement audio...")
+video_streaam.download("audio")
 print("OK")
