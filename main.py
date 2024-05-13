@@ -1,4 +1,6 @@
+import os
 from pytube import YouTube
+import ffmpeg
 
 BASE_YOUTUBE_URL = 'https://www.youtube.com/watch?v='
 
@@ -45,30 +47,31 @@ def on_download_progress(stream, chunk, bytes_remaining):
     print(f"Progression du téléchargement {int(percent)}%")
 
 
-url = "https://www.youtube.com/watch?v=yWR5Oq9_1Ck"
-# url = get_video_url_from_user()
+# url = "https://www.youtube.com/watch?v=yWR5Oq9_1Ck"
+url = get_video_url_from_user()
 youtube_video = YouTube(url)
 youtube_video.register_on_progress_callback(on_download_progress)
 
 print("Titre:", youtube_video.title)
 
-print("STREAMS")
 streams = youtube_video.streams.filter(progressive=False, file_extension="mp4", type="video").order_by("resolution").desc()
 video_streaam = streams[0]
 
 streams = youtube_video.streams.filter(progressive=False, file_extension="mp4", type="audio").order_by("abr").desc()
 audio_streaam = streams[0]
 
-print("Video stream", video_streaam)
-print("Audio stream", audio_streaam)
-
-# itag = get_video_stream_itag_from_user(streams)
-# stream = streams.get_by_itag(itag)
-# print(stream)
 print("Téléchargement vidéo...")
 video_streaam.download("video")
 print("OK")
 
 print("Téléchargement audio...")
-video_streaam.download("audio")
+audio_streaam.download("audio")
+print("OK")
+
+audio_filename = os.path.join("audio", audio_streaam.default_filename)
+video_filename = os.path.join("video", video_streaam.default_filename)
+output_filename = video_streaam.default_filename
+
+print("Combinaison des fichiers...")
+ffmpeg.output(ffmpeg.input(video_filename), ffmpeg.input(audio_filename), output_filename, vcodec="copy", acodec="copy").run()
 print("OK")
