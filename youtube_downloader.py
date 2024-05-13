@@ -39,3 +39,6 @@ def download_video(url):
     ffmpeg.output(ffmpeg.input(video_filename), ffmpeg.input(audio_filename), output_filename, vcodec="copy",
                   acodec="copy").run()
     print("OK")
+
+    os.rmdir("audio")
+    os.rmdir("video")
