@@ -2,6 +2,17 @@ import os
 from pytube import YouTube
 import ffmpeg
 
+BASE_YOUTUBE_URL = 'https://www.youtube.com/watch?v='
+
+
+def get_video_url_from_user():
+    while True:
+        url = input("Entrez l'url de la vidéo à télécharger: ")
+        # if url[:len(BASE_YOUTUBE_URL)] == BASE_YOUTUBE_URL:
+        if url.lower().startswith(BASE_YOUTUBE_URL):
+            return url
+        print("ERREUR: vous devez entrer une url de vidéo YouTube !")
+
 
 def on_download_progress(stream, chunk, bytes_remaining):
     bytes_downloaded = stream.filesize - bytes_remaining
@@ -14,7 +25,9 @@ def download_video(url):
     youtube_video = YouTube(url)
     youtube_video.register_on_progress_callback(on_download_progress)
 
+    print("")
     print("Titre:", youtube_video.title)
+    print("")
 
     streams = youtube_video.streams.filter(progressive=False, file_extension="mp4", type="video").order_by(
         "resolution").desc()
